@@ -1,4 +1,5 @@
 ﻿using Code.Factories;
+using Code.Interfaces;
 using UnityEngine;
 
 namespace Code.InitDatas
@@ -9,5 +10,6 @@ namespace Code.InitDatas
         public int MinRoomBorder { get; set; }
         public int SplitCount { get; set; }
         public int WayWidth { get; set; }
+        public IRoomSplitter RoomSplitter { get; set; }
     }
 }

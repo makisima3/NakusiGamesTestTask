@@ -2,6 +2,7 @@
 using Code.Factories;
 using Code.InitDatas;
 using Code.MapGeneration;
+using Code.RoomSplitters;
 using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,17 +18,18 @@ namespace Code
         [SerializeField] private int splitCount = 3;
         [SerializeField] private int minRoomBorder = 1;
         [SerializeField] private int wayWidth = 5;
+        
         private MapGenerator mapGenerator;
 
         private void Awake()
         {
-            mapGenerator = new MapGenerator();
-            mapGenerator.Initialize(new MapGeneratorInitData()
+            mapGenerator = new MapGenerator(new MapGeneratorInitData()
             {
                 Size = size,
                 SplitCount = splitCount,
                 MinRoomBorder = minRoomBorder,
                 WayWidth = wayWidth,
+                RoomSplitter = new RandomAxisRoomSplitter()
             });
             
             mapGenerator.Generate();
