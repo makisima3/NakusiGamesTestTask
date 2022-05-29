@@ -47,65 +47,45 @@ namespace Code.MapGeneration
                 IsVertical = true,
             });
 
-            (var roomA, var roomB) = _roomSplitter.SplitUpRoom(initialRoom);
-
-            SplitRooms(_splitCount - 1, roomA, roomB);
+            SplitRooms(_splitCount, initialRoom);
 
             RemoveWalls();
         }
 
-        private void SplitRooms(int counter, RoomHolder roomA, RoomHolder roomB)
+        private void SplitRooms(int counter, RoomHolder room)
         {
             if (counter > 0)
             {
-                (var firstRoomA, var secondRoomA) = _roomSplitter.SplitUpRoom(roomA);
+                (var firstRoom, var secondRoom) = _roomSplitter.SplitUpRoom(room);
 
-                SplitRooms(counter - 1, firstRoomA, secondRoomA);
-
-                (var firstRoomB, var secondRoomB) = _roomSplitter.SplitUpRoom(roomB);
-
-                SplitRooms(counter - 1, firstRoomB, secondRoomB);
+                SplitRooms(counter - 1, firstRoom);
+                SplitRooms(counter - 1, secondRoom);
             }
             else
             {
-                _roomHolders.Add(roomA);
-                _roomHolders.Add(roomB);
+                _roomHolders.Add(room);
 
-                for (int x = roomA.X; x < roomA.X + roomA.Width; x++)
+                SetRoomWalls(room);
+            }
+        }
+
+        private void SetRoomWalls(RoomHolder room)
+        {
+            for (int x = room.X; x < room.X + room.Width; x++)
+            {
+                for (int y = room.Y; y < room.Y + room.Height; y++)
                 {
-                    for (int y = roomA.Y; y < roomA.Y + roomA.Height; y++)
-                    {
-                        if (_cells[x, y].Type == CellType.Border)
-                            continue;
+                    if (_cells[x, y].Type == CellType.Border)
+                        continue;
 
-                        if ((x == roomA.X || x == roomA.X + roomA.Width) ||
-                            (y == roomA.Y || y == roomA.Y + roomA.Height))
-                        {
-                            _cells[x, y].SetType(CellType.Wall);
-                        }
-                        else
-                        {
-                            _cells[x, y].SetType(CellType.Empty);
-                        }
+                    if ((x == room.X || x == room.X + room.Width) ||
+                        (y == room.Y || y == room.Y + room.Height))
+                    {
+                        _cells[x, y].SetType(CellType.Wall);
                     }
-                }
-
-                for (int x = roomB.X; x < roomB.X + roomB.Width; x++)
-                {
-                    for (int y = roomB.Y; y < roomB.Y + roomB.Height; y++)
+                    else
                     {
-                        if (_cells[x, y].Type == CellType.Border)
-                            continue;
-
-                        if ((x == roomB.X || x == roomB.X + roomB.Width) ||
-                            (y == roomB.Y || y == roomB.Y + roomB.Height))
-                        {
-                            _cells[x, y].SetType(CellType.Wall);
-                        }
-                        else
-                        {
-                            _cells[x, y].SetType(CellType.Empty);
-                        }
+                        _cells[x, y].SetType(CellType.Empty);
                     }
                 }
             }
