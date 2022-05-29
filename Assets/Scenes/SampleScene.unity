@@ -428,8 +428,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDelay: 0.1
-  container: {fileID: 1349934920576445434, guid: 365046ecacc09c84aa3378ee1222d7ac, type: 3}
-  ghost: {fileID: 244186408989812634, guid: 4af37bc31600c6b4b90fefde32406136, type: 3}
+  container: {fileID: 2110345897}
 --- !u!156049354 &2110345896
 Grid:
   m_ObjectHideFlags: 0

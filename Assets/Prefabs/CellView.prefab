@@ -110,3 +110,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96d3d6acac18417cbb536f10bb3191a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _pairs:
+  - type: 1
+    material: {fileID: 2100000, guid: 79a95c9bb640d2645a45d28b2710ff11, type: 2}
+  - type: 2
+    material: {fileID: 2100000, guid: c344a9c3df739a9438523e37f2b4a9ac, type: 2}
+  - type: 3
+    material: {fileID: 2100000, guid: 8513c47eef172f94c948a844cba0076f, type: 2}
+  - type: 0
+    material: {fileID: 2100000, guid: 5bd884fe5fa9b7f49afe01cb3619f809, type: 2}

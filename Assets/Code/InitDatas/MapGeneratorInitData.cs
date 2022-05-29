@@ -11,5 +11,6 @@ namespace Code.InitDatas
         public int SplitCount { get; set; }
         public int WayWidth { get; set; }
         public IRoomSplitter RoomSplitter { get; set; }
+        public int MinWallSize { get; set; }
     }
 }

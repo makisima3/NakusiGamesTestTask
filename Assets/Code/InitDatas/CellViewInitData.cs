@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using DefaultNamespace;
+using UnityEngine;
 
 namespace Code.InitDatas
 {
     public class CellViewInitData
     {
-        public Color Color;
+        public Cell Cell { get; set; }
     }
 }

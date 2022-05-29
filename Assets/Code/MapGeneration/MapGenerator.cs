@@ -20,10 +20,11 @@ namespace Code.MapGeneration
         private IRoomSplitter _roomSplitter;
         private List<RoomHolder> _roomHolders;
         private Cell[,] _cells;
-        
+        private int _minWallSize;
+
         public Cell[,] Cells => _cells;
 
-        public MapGenerator (MapGeneratorInitData initData)
+        public MapGenerator(MapGeneratorInitData initData)
         {
             _roomHolders = new List<RoomHolder>();
 
@@ -32,6 +33,7 @@ namespace Code.MapGeneration
             _splitCount = initData.SplitCount;
             _wayWidth = initData.WayWidth;
             _roomSplitter = initData.RoomSplitter;
+            _minWallSize = initData.MinWallSize;
         }
 
         public void Generate()
@@ -50,6 +52,8 @@ namespace Code.MapGeneration
             SplitRooms(_splitCount, initialRoom);
 
             RemoveWalls();
+
+            ClearSmallWalls();
         }
 
         private void SplitRooms(int counter, RoomHolder room)
@@ -115,19 +119,19 @@ namespace Code.MapGeneration
                 var leftCells = new List<Cell>();
                 var topCells = new List<Cell>();
 
-                for (int i = randomY - (_wayWidth / 2 + (_wayWidth%2 == 0? 0: 1)) ; i < randomY + _wayWidth / 2; i++)
+                for (int i = randomY - (_wayWidth / 2 + (_wayWidth % 2 == 0 ? 0 : 1)); i < randomY + _wayWidth / 2; i++)
                 {
-                    if(i < 0 || i >= _size.x)
+                    if (i < 0 || i >= _size.x)
                         continue;
-                    
+
                     leftCells.Add(_cells[x + width, i]);
                 }
 
-                for (int i = randomX - (_wayWidth / 2 + (_wayWidth%2 == 0? 0: 1)); i < randomX + _wayWidth / 2; i++)
+                for (int i = randomX - (_wayWidth / 2 + (_wayWidth % 2 == 0 ? 0 : 1)); i < randomX + _wayWidth / 2; i++)
                 {
-                    if(i < 0 || i >= _size.x)
+                    if (i < 0 || i >= _size.x)
                         continue;
-                    
+
                     leftCells.Add(_cells[i, y + height]);
                 }
 
@@ -145,7 +149,66 @@ namespace Code.MapGeneration
                 }
             }
         }
+
+        List<Vector2Int> offsets = new List<Vector2Int>()
+        {
+            Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right, Vector2Int.one, -Vector2Int.one,
+            new(1, -1), new(-1, 1)
+        };
         
+        List<Vector2Int> offsets2 = new List<Vector2Int>()
+        {
+            Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right
+        };
+
+        private void ClearSmallWalls()
+        {
+            var visitedCells = new List<Cell>();
+            var invalidGroups = _cells.Cast<Cell>()
+                .Where(cell => cell.Type == CellType.Wall)
+                .Select(cell => FindGroup(cell, visitedCells))
+                .Where(group => group.Count < _minWallSize);
+
+            foreach (var invalidGroup in invalidGroups)
+            {
+                invalidGroup.ForEach(cell => cell.SetType(CellType.Empty));
+            }
+        }
+
+        private List<Cell> FindGroup(Cell currentCell, List<Cell> visitedCells)
+        {
+            var group = new List<Cell>();
+            
+            if (visitedCells.Contains(currentCell))
+                return group;
+            
+            visitedCells.Add(currentCell);
+            group.Add(currentCell);
+            
+            foreach (var offset in offsets2)
+            {
+                var nextCell = GetCell(currentCell.Position + offset);
+                
+                if(nextCell == null || nextCell.Type != CellType.Wall)
+                    continue;
+
+                group.AddRange(FindGroup(nextCell, visitedCells));
+            }
+
+            return group;
+        }
+
+        private Cell GetCell(Vector2Int position)
+        {
+            if (position.x < 0 || position.x >= _size.x)
+                return null;
+
+            if (position.y < 0 || position.y >= _size.y)
+                return null;
+
+            return _cells[position.x, position.y];
+        }
+
         private void FillCells()
         {
             _cells = new Cell[_size.x, _size.y];
