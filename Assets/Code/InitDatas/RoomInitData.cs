@@ -8,6 +8,5 @@
         public int Height { get; set; }
         public int MinBorder { get; set; }
         public bool IsVertical { get; set; }
-        public int Level { get; set; }
     }
 }

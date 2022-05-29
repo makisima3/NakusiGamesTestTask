@@ -380,7 +380,7 @@ MonoBehaviour:
   worldFactory: {fileID: 442125392}
   size: {x: 100, y: 100}
   splitCount: 5
-  minRoomBorder: 3
+  minRoomBorder: 5
   wayWidth: 8
 --- !u!4 &1822330990
 Transform:

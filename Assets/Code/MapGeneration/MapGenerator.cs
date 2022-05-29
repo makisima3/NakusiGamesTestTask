@@ -37,8 +37,7 @@ namespace Code.MapGeneration
         public void Generate()
         {
             FillCells();
-            var initialRoom = new RoomHolder();
-            initialRoom.Initialize(new RoomInitData()
+            var initialRoom = new RoomHolder(new RoomInitData()
             {
                 X = 0,
                 Y = 0,
@@ -46,10 +45,9 @@ namespace Code.MapGeneration
                 Height = _size.y,
                 MinBorder = _minRoomBorder,
                 IsVertical = true,
-                Level = _splitCount,
             });
 
-            (var roomA, var roomB) = initialRoom.SplitUp();
+            (var roomA, var roomB) = SplitUpRoom(initialRoom);
 
             SplitRooms(_splitCount - 1, roomA, roomB);
 
@@ -60,11 +58,11 @@ namespace Code.MapGeneration
         {
             if (counter > 0)
             {
-                (var firstRoomA, var secondRoomA) = roomA.SplitUp();
+                (var firstRoomA, var secondRoomA) = SplitUpRoom(roomA);
 
                 SplitRooms(counter - 1, firstRoomA, secondRoomA);
 
-                (var firstRoomB, var secondRoomB) = roomB.SplitUp();
+                (var firstRoomB, var secondRoomB) = SplitUpRoom(roomB);
 
                 SplitRooms(counter - 1, firstRoomB, secondRoomB);
             }
@@ -113,6 +111,112 @@ namespace Code.MapGeneration
             }
         }
 
+
+        public (RoomHolder, RoomHolder) SplitUpRoom(RoomHolder room)
+        {
+            var isVertical = !room.IsVertical;
+            
+            var axis = isVertical ? room.Width : room.Height;
+            var splitPoint = Random.Range(axis / 2 - axis / room.MINBorder, axis / 2 + axis / room.MINBorder);
+
+            var xA = room.X;
+            var yA = room.Y;
+            var widthA = isVertical ? splitPoint : room.Width;
+            var heightA = isVertical ? room.Height : splitPoint;
+
+            var xB = isVertical ? room.X + splitPoint : room.X;
+            var yB = isVertical ? room.Y : room.Y + splitPoint;
+            var widthB = isVertical ? room.Width - splitPoint : room.Width;
+            var heightB = isVertical ? room.Height : room.Height - splitPoint;
+
+            var roomA = new RoomHolder(new RoomInitData()
+            {
+                X = xA,
+                Y = yA,
+                Width = widthA,
+                Height = heightA,
+                IsVertical = isVertical,
+                MinBorder = room.MINBorder,
+            });
+                
+            var roomB = new RoomHolder(new RoomInitData()
+            {
+                X = xB,
+                Y = yB,
+                Width = widthB,
+                Height = heightB,
+                IsVertical = isVertical,
+                MinBorder = room.MINBorder,
+            });
+
+            return (roomA, roomB);
+
+/*
+            if (_isVertical)
+            {
+                var splitPoint = Random.Range(_width / 2 - _width / _minBorder, _width / 2 + _width / _minBorder);
+
+                var roomA = new RoomHolder();
+                roomA.Initialize(new RoomInitData()
+                {
+                    X = _x,
+                    Y = _y,
+                    Width = splitPoint,
+                    Height = _height,
+                    MinBorder = _minBorder,
+                    IsVertical = _isVertical,
+                    Level = _level - 1,
+                });
+
+                var roomB = new RoomHolder();
+                roomB.Initialize(new RoomInitData()
+                {
+                    X = _x + splitPoint,
+                    Y = _y,
+                    Width = _width - splitPoint,
+                    Height = _height,
+                    MinBorder = _minBorder,
+                    IsVertical = _isVertical,
+                    Level = _level - 1,
+                });
+
+                return (roomA, roomB);
+            }
+            else
+            {
+                var splitPoint = Random.Range(_height / 2 - _height / _minBorder, _height / 2 + _height / _minBorder);
+                var roomA = new RoomHolder();
+                roomA.Initialize(new RoomInitData()
+                {
+                    X = _x,
+                    Y = _y,
+                    Width = _width,
+                    Height = splitPoint,
+                    MinBorder = _minBorder,
+                    IsVertical = _isVertical,
+                    Level = _level - 1,
+                });
+
+                var roomB = new RoomHolder();
+                roomB.Initialize(new RoomInitData()
+                {
+                    X = _x,
+                    Y = _y + splitPoint,
+                    Width = _width,
+                    Height = _height - splitPoint,
+                    MinBorder = _minBorder,
+                    IsVertical = _isVertical,
+                    Level = _level - 1,
+                });
+
+                return (roomA, roomB);
+            }
+            
+            */
+
+        }
+
+        
         private void RemoveWalls()
         {
             var counter = 0;
