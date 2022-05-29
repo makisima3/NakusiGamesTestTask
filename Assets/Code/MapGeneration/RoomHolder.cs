@@ -13,7 +13,7 @@ namespace Code.MapGeneration
         private int _minBorder;
         private bool _isVertical;
         private int _level;
-        
+
         public int X => _x;
         public int Y => _y;
         public int Width => _width;
@@ -33,13 +33,54 @@ namespace Code.MapGeneration
             _level = initData.Level;
         }
 
-        public (RoomHolder,RoomHolder) SplitUp()
+        public (RoomHolder, RoomHolder) SplitUp()
         {
             _isVertical = !_isVertical;
+
+            var axis = _isVertical ? _width : _height;
+            var splitPoint = Random.Range(axis / 2 - axis / _minBorder, axis / 2 + axis / _minBorder);
+
+            var xA = _x;
+            var yA = _y;
+            var widthA = _isVertical ? splitPoint : _width;
+            var heightA = _isVertical ? _height : splitPoint;
+
+            var xB = _isVertical ? _x + splitPoint : _x;
+            var yB = _isVertical ? _y : _y + splitPoint;
+            var widthB = _isVertical ? _width - splitPoint : _width;
+            var heightB = _isVertical ? _height : _height - splitPoint;
+
+            var roomA = new RoomHolder();
+            roomA.Initialize(new RoomInitData()
+            {
+                X = xA,
+                Y = yA,
+                Width = widthA,
+                Height = heightA,
+                IsVertical = _isVertical,
+                MinBorder = _minBorder,
+                Level = _level,
+            });
+                
+            var roomB = new RoomHolder();
+            roomB.Initialize(new RoomInitData()
+            {
+                X = xB,
+                Y = yB,
+                Width = widthB,
+                Height = heightB,
+                IsVertical = _isVertical,
+                MinBorder = _minBorder,
+                Level = _level,
+            });
+
+            return (roomA, roomB);
+
+/*
             if (_isVertical)
             {
-                var splitPoint = Random.Range(_width/ 2 - _width /5, _width/2 + _width / 5);
-                
+                var splitPoint = Random.Range(_width / 2 - _width / _minBorder, _width / 2 + _width / _minBorder);
+
                 var roomA = new RoomHolder();
                 roomA.Initialize(new RoomInitData()
                 {
@@ -51,7 +92,7 @@ namespace Code.MapGeneration
                     IsVertical = _isVertical,
                     Level = _level - 1,
                 });
-                
+
                 var roomB = new RoomHolder();
                 roomB.Initialize(new RoomInitData()
                 {
@@ -68,7 +109,7 @@ namespace Code.MapGeneration
             }
             else
             {
-                var splitPoint = Random.Range(_height/ 2 - _height /5, _height/2 + _height / 5);
+                var splitPoint = Random.Range(_height / 2 - _height / _minBorder, _height / 2 + _height / _minBorder);
                 var roomA = new RoomHolder();
                 roomA.Initialize(new RoomInitData()
                 {
@@ -80,7 +121,7 @@ namespace Code.MapGeneration
                     IsVertical = _isVertical,
                     Level = _level - 1,
                 });
-                
+
                 var roomB = new RoomHolder();
                 roomB.Initialize(new RoomInitData()
                 {
@@ -92,9 +133,12 @@ namespace Code.MapGeneration
                     IsVertical = _isVertical,
                     Level = _level - 1,
                 });
-                
+
                 return (roomA, roomB);
             }
+            
+            */
+
         }
     }
 }
