@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Code.InitDatas
 {
-    public class MapGeneratorInitData
+    public class MapGeneratorSettings
     {
         public Vector2Int Size { get; set; }
         public int MinRoomBorder { get; set; }

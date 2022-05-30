@@ -21,7 +21,7 @@ namespace Code
         
         private void Awake()
         {
-           var mapGenerator = new MapGenerator(new MapGeneratorInitData()
+           var mapGenerator = new MapGenerator(new MapGeneratorSettings()
             {
                 Size = size,
                 SplitCount = splitCount,

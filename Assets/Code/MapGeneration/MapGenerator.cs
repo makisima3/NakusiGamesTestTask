@@ -18,15 +18,20 @@ namespace Code.MapGeneration
         private int _splitCount;
         private int _wayWidth;
         private IRoomSplitter _roomSplitter;
-        private List<RoomHolder> _roomHolders;
+        private List<Room> _rooms;
         private Cell[,] _cells;
         private int _minWallSize;
 
+        private readonly List<Vector2Int> _offsets = new()
+        {
+            Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right
+        };
+
         public Cell[,] Cells => _cells;
 
-        public MapGenerator(MapGeneratorInitData initData)
+        public MapGenerator(MapGeneratorSettings initData)
         {
-            _roomHolders = new List<RoomHolder>();
+            _rooms = new List<Room>();
 
             _size = initData.Size;
             _minRoomBorder = initData.MinRoomBorder;
@@ -39,7 +44,8 @@ namespace Code.MapGeneration
         public void Generate()
         {
             FillCells();
-            var initialRoom = new RoomHolder(new RoomInitData()
+
+            var initialRoom = new Room()
             {
                 X = 0,
                 Y = 0,
@@ -47,7 +53,7 @@ namespace Code.MapGeneration
                 Height = _size.y,
                 MinBorder = _minRoomBorder,
                 IsVertical = true,
-            });
+            };
 
             SplitRooms(_splitCount, initialRoom);
 
@@ -56,7 +62,7 @@ namespace Code.MapGeneration
             ClearSmallWalls();
         }
 
-        private void SplitRooms(int counter, RoomHolder room)
+        private void SplitRooms(int counter, Room room)
         {
             if (counter > 0)
             {
@@ -67,13 +73,13 @@ namespace Code.MapGeneration
             }
             else
             {
-                _roomHolders.Add(room);
+                _rooms.Add(room);
 
                 SetRoomWalls(room);
             }
         }
 
-        private void SetRoomWalls(RoomHolder room)
+        private void SetRoomWalls(Room room)
         {
             for (int x = room.X; x < room.X + room.Width; x++)
             {
@@ -95,71 +101,43 @@ namespace Code.MapGeneration
             }
         }
 
-        private void RemoveWalls()
+        private void RemoveWalls(Room room, bool isVertical)
         {
-            var counter = 0;
-            foreach (var holder in _roomHolders)
+            var bottomRange = isVertical ? room.Left + 1 : room.Bottom + 1;
+            var topRange = isVertical ? room.Right - 1 : room.Top - 1;
+            var constAxis = isVertical ? room.Top : room.Right;
+            var randomAxis = Random.Range(bottomRange, topRange);
+
+            var halfWayWidth = _wayWidth / 2;
+
+            if (_wayWidth % 2 != 0)
             {
-                counter++;
+                halfWayWidth += 1;
+            }
 
-                var x = holder.X + 1;
-                var y = holder.Y + 1;
+            var start = randomAxis - halfWayWidth;
+            var end = randomAxis + _wayWidth / 2;
 
-                var width = holder.Width - 1;
-                var height = holder.Height - 1;
+            for (var i = start; i < end; i++)
+            {
+                var x = isVertical ? i : constAxis;
+                var y = isVertical ? constAxis : i;
 
-                var randomX = Random.Range(x, x + width);
-                var randomY = Random.Range(y, y + height);
+                var cell = GetCell(x, y);
 
-                if (x + width >= 100)
-                    width -= 1;
-                if (y + height >= 100)
-                    height -= 1;
-
-                var leftCells = new List<Cell>();
-                var topCells = new List<Cell>();
-
-                for (int i = randomY - (_wayWidth / 2 + (_wayWidth % 2 == 0 ? 0 : 1)); i < randomY + _wayWidth / 2; i++)
-                {
-                    if (i < 0 || i >= _size.x)
-                        continue;
-
-                    leftCells.Add(_cells[x + width, i]);
-                }
-
-                for (int i = randomX - (_wayWidth / 2 + (_wayWidth % 2 == 0 ? 0 : 1)); i < randomX + _wayWidth / 2; i++)
-                {
-                    if (i < 0 || i >= _size.x)
-                        continue;
-
-                    leftCells.Add(_cells[i, y + height]);
-                }
-
-
-                foreach (var leftCell in leftCells)
-                {
-                    if (leftCell.Type != CellType.Border)
-                        leftCell.SetType(CellType.Empty);
-                }
-
-                foreach (var topCell in topCells)
-                {
-                    if (topCell.Type != CellType.Border)
-                        topCell.SetType(CellType.Empty);
-                }
+                if (cell != null && cell.Type != CellType.Border)
+                    cell.SetType(CellType.Empty);
             }
         }
 
-        List<Vector2Int> offsets = new List<Vector2Int>()
+        private void RemoveWalls()
         {
-            Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right, Vector2Int.one, -Vector2Int.one,
-            new(1, -1), new(-1, 1)
-        };
-        
-        List<Vector2Int> offsets2 = new List<Vector2Int>()
-        {
-            Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right
-        };
+            foreach (var room in _rooms)
+            {
+                RemoveWalls(room, true);
+                RemoveWalls(room, false);
+            }
+        }
 
         private void ClearSmallWalls()
         {
@@ -178,18 +156,18 @@ namespace Code.MapGeneration
         private List<Cell> FindGroup(Cell currentCell, List<Cell> visitedCells)
         {
             var group = new List<Cell>();
-            
+
             if (visitedCells.Contains(currentCell))
                 return group;
-            
+
             visitedCells.Add(currentCell);
             group.Add(currentCell);
-            
-            foreach (var offset in offsets2)
+
+            foreach (var offset in _offsets)
             {
                 var nextCell = GetCell(currentCell.Position + offset);
-                
-                if(nextCell == null || nextCell.Type != CellType.Wall)
+
+                if (nextCell == null || nextCell.Type != CellType.Wall)
                     continue;
 
                 group.AddRange(FindGroup(nextCell, visitedCells));
@@ -198,15 +176,17 @@ namespace Code.MapGeneration
             return group;
         }
 
-        private Cell GetCell(Vector2Int position)
+        private Cell GetCell(Vector2Int position) => GetCell(position.x, position.y);
+
+        private Cell GetCell(int x, int y)
         {
-            if (position.x < 0 || position.x >= _size.x)
+            if (x < 0 || x >= _size.x)
                 return null;
 
-            if (position.y < 0 || position.y >= _size.y)
+            if (y < 0 || y >= _size.y)
                 return null;
 
-            return _cells[position.x, position.y];
+            return _cells[x, y];
         }
 
         private void FillCells()

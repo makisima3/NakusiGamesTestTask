@@ -4,6 +4,6 @@ namespace Code.Interfaces
 {
     public interface IRoomSplitter
     {
-        (RoomHolder, RoomHolder) SplitUpRoom(RoomHolder room);
+        (Room, Room) SplitUpRoom(Room room);
     }
 }

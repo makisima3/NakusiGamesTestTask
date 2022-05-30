@@ -7,12 +7,12 @@ namespace Code.RoomSplitters
 {
     public class RandomAxisRoomSplitter : IRoomSplitter
     {
-        public (RoomHolder, RoomHolder) SplitUpRoom(RoomHolder room)
+        public (Room, Room) SplitUpRoom(Room room)
         {
             var isVertical = !room.IsVertical;
 
             var axis = isVertical ? room.Width : room.Height;
-            var splitPoint = Random.Range(axis / 2 - axis / room.MINBorder, axis / 2 + axis / room.MINBorder);
+            var splitPoint = Random.Range(axis / 2 - axis / room.MinBorder, axis / 2 + axis / room.MinBorder);
 
             var xA = room.X;
             var yA = room.Y;
@@ -24,25 +24,25 @@ namespace Code.RoomSplitters
             var widthB = isVertical ? room.Width - splitPoint : room.Width;
             var heightB = isVertical ? room.Height : room.Height - splitPoint;
 
-            var roomA = new RoomHolder(new RoomInitData()
+            var roomA = new Room()
             {
                 X = xA,
                 Y = yA,
                 Width = widthA,
                 Height = heightA,
                 IsVertical = isVertical,
-                MinBorder = room.MINBorder,
-            });
+                MinBorder = room.MinBorder,
+            };
 
-            var roomB = new RoomHolder(new RoomInitData()
+            var roomB = new Room()
             {
                 X = xB,
                 Y = yB,
                 Width = widthB,
                 Height = heightB,
                 IsVertical = isVertical,
-                MinBorder = room.MINBorder,
-            });
+                MinBorder = room.MinBorder,
+            };
 
             return (roomA, roomB);
         }
