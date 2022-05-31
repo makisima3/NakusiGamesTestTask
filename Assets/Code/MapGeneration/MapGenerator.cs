@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Code.BombGeneration;
+using Code.CharactersGeneration;
 using Code.Enums;
 using Code.Factories;
 using Code.InitDatas;

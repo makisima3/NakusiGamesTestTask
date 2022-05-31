@@ -8,7 +8,7 @@ namespace Plugins.RobyyUtils
     public static class RandomExt
     {
         public static bool Check(float chance) => Random.value <= chance;
-        
+
         [CanBeNull]
         public static T ChooseOne<T>(this IEnumerable<T> values)
         {

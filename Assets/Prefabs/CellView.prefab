@@ -9,9 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5466565141341352611}
-  - component: {fileID: 3857381726804432254}
-  - component: {fileID: 7466199324803848384}
-  - component: {fileID: 372922479084453882}
   - component: {fileID: -240206746734627884}
   m_Layer: 0
   m_Name: CellView
@@ -35,69 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &3857381726804432254
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3786927049631069476}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &7466199324803848384
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3786927049631069476}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &372922479084453882
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3786927049631069476}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-240206746734627884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,10 +46,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pairs:
   - type: 1
-    material: {fileID: 2100000, guid: 79a95c9bb640d2645a45d28b2710ff11, type: 2}
+    view: {fileID: 2650652355083851224, guid: 139890e46049efd4a954f0b48466a690, type: 3}
   - type: 2
-    material: {fileID: 2100000, guid: c344a9c3df739a9438523e37f2b4a9ac, type: 2}
+    view: {fileID: 4851802843101189533, guid: 13efaa3803ee1cc47b7b58e20aad7baa, type: 3}
   - type: 3
-    material: {fileID: 2100000, guid: 8513c47eef172f94c948a844cba0076f, type: 2}
+    view: {fileID: 7099996937174858455, guid: 0afef71c59e1dfe4a914975437166363, type: 3}
   - type: 0
-    material: {fileID: 2100000, guid: 5bd884fe5fa9b7f49afe01cb3619f809, type: 2}
+    view: {fileID: 6049513899848070371, guid: d8eacea97c36e354e9c23586bd1fb981, type: 3}

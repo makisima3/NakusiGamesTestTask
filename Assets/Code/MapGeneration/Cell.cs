@@ -1,5 +1,7 @@
-﻿using Code.Enums;
+﻿using Code.CharactersGeneration;
+using Code.Enums;
 using Code.InitDatas;
+using Code.Interfaces;
 using Plugins.SimpleFactory;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -12,6 +14,10 @@ namespace DefaultNamespace
         
         public Vector2Int Position { get; private set; }
 
+        public IDamageable Damageable { get; private set; }
+
+        public bool HasDamageable => Damageable != null;
+
         public void Initialize(CellInitData initData)
         {
             Type = initData.Type;
@@ -23,5 +29,10 @@ namespace DefaultNamespace
             Type = type;
         }
 
+        public void SetDamageable(IDamageable damageable)
+        {
+            Damageable = damageable;
+        }
+        
     }
 }
